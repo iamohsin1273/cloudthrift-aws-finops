@@ -1,0 +1,5 @@
+# Security
+
+Collector and scheduler have separate roles. The collector can read cost and EC2 inventory, write only under the report prefix, and write its own log streams. Cost Explorer and EC2 DescribeInstances require `Resource: *`; STS identity similarly has no resource scope. Scheduler can invoke only the collector. No EC2 mutation permission exists. Reports and Terraform state use S3-managed encryption, versioning, public access blocks, ownership enforcement and HTTPS-only policies. Neither bucket is force-destroyed. IAM principals with S3 access still need to be restricted by the account administrator; these bucket policies do not enumerate authorized readers.
+
+Reports include resource tags and account identifiers. Treat them and Terraform state as sensitive. Logs omit tag values and exception messages. The bootstrap state starts locally and must be secured; bucket versioning and state locks do not replace access control or backups. Do not commit credentials, state, plans or tfvars containing sensitive data. CI uses read-only repository permissions and contains no cloud credentials or deployment action.

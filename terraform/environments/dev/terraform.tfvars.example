@@ -1,0 +1,3 @@
+aws_region        = "ap-south-1"
+inventory_regions = ["ap-south-1"]
+schedule_timezone = "Asia/Kolkata"
