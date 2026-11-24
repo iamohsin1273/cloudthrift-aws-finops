@@ -42,6 +42,8 @@ Tests mock AWS and need no credentials. The source-only ZIP has normalized file 
 
 See [deployment and cleanup](docs/deployment.md), [architecture and schema](architecture/architecture.md), [security](docs/security.md), and [cost assumptions](docs/cost-estimation.md). Review before seeking explicit approval to deploy. AWS Budgets, even if added later, does not prevent charges.
 
+An [offline infrastructure plan review](docs/infrastructure-plan-review.md) shows synthetic bootstrap and application plans without AWS access. It is not an applyable or account-specific plan.
+
 ## Repository
 
 `src/cloudthrift` contains collectors, reporting and a handler; `terraform` holds bootstrap, environment and reusable modules; `tests` contains mocked tests; `scripts` packages Lambda; `.github/workflows` validates changes. `build/` and Terraform state are ignored.

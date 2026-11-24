@@ -14,8 +14,10 @@ jobs:
       - run: terraform fmt -check -recursive terraform
       - run: terraform -chdir=terraform/bootstrap init -backend=false
       - run: terraform -chdir=terraform/bootstrap validate
+      - run: terraform -chdir=terraform/bootstrap test -no-color
       - run: terraform -chdir=terraform/environments/dev init -backend=false
       - run: terraform -chdir=terraform/environments/dev validate
+      - run: terraform -chdir=terraform/environments/dev test -no-color
       - uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: terraform

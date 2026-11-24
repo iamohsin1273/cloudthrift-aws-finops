@@ -1,0 +1,320 @@
+﻿tests\offline.tftest.hcl... in progress
+  run "phase1_offline_plan"... pass
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.collector.data.aws_iam_policy_document.permissions will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "permissions" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions   = [
+              + "ce:GetCostAndUsage",
+              + "ec2:DescribeInstances",
+              + "sts:GetCallerIdentity",
+            ]
+          + resources = [
+              + "*",
+            ]
+        }
+      + statement {
+          + actions   = [
+              + "s3:PutObject",
+            ]
+          + resources = [
+              + (known after apply),
+            ]
+        }
+      + statement {
+          + actions   = [
+              + "logs:CreateLogStream",
+              + "logs:PutLogEvents",
+            ]
+          + resources = [
+              + (known after apply),
+            ]
+        }
+    }
+
+  # module.collector.aws_cloudwatch_log_group.this will be created
+  + resource "aws_cloudwatch_log_group" "this" {
+      + arn               = (known after apply)
+      + id                = (known after apply)
+      + log_group_class   = (known after apply)
+      + name              = "/aws/lambda/cloudthrift-dev-collector"
+      + name_prefix       = (known after apply)
+      + retention_in_days = 14
+      + tags_all          = (known after apply)
+    }
+
+  # module.collector.aws_iam_role.this will be created
+  + resource "aws_iam_role" "this" {
+      + arn                 = (known after apply)
+      + assume_role_policy  = jsonencode(
+            {
+              + Statement = []
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date         = (known after apply)
+      + id                  = (known after apply)
+      + managed_policy_arns = (known after apply)
+      + name                = "cloudthrift-dev-collector"
+      + name_prefix         = (known after apply)
+      + tags_all            = (known after apply)
+      + unique_id           = (known after apply)
+    }
+
+  # module.collector.aws_iam_role_policy.this will be created
+  + resource "aws_iam_role_policy" "this" {
+      + id          = (known after apply)
+      + name        = (known after apply)
+      + name_prefix = (known after apply)
+      + policy      = (known after apply)
+      + role        = (known after apply)
+    }
+
+  # module.collector.aws_lambda_function.this will be created
+  + resource "aws_lambda_function" "this" {
+      + architectures                  = (known after apply)
+      + arn                            = (known after apply)
+      + code_sha256                    = (known after apply)
+      + filename                       = "../../../build/cloudthrift.zip"
+      + function_name                  = "cloudthrift-dev-collector"
+      + handler                        = "cloudthrift.handlers.collector.handler"
+      + id                             = (known after apply)
+      + invoke_arn                     = (known after apply)
+      + last_modified                  = (known after apply)
+      + memory_size                    = 256
+      + qualified_arn                  = (known after apply)
+      + qualified_invoke_arn           = (known after apply)
+      + reserved_concurrent_executions = 1
+      + role                           = (known after apply)
+      + runtime                        = "python3.12"
+      + signing_job_arn                = (known after apply)
+      + signing_profile_version_arn    = (known after apply)
+      + source_code_hash               = "et8sv2y+Ty4YyCIj4n2sQglWgvsxdJSpaRpwcQJmIMA="
+      + source_code_size               = (known after apply)
+      + tags_all                       = (known after apply)
+      + timeout                        = 300
+      + version                        = (known after apply)
+
+      + environment {
+          + variables = {
+              + "INVENTORY_REGIONS" = "ap-south-1"
+              + "REPORT_BUCKET"     = (known after apply)
+            }
+        }
+    }
+
+  # module.schedule.aws_iam_role.this will be created
+  + resource "aws_iam_role" "this" {
+      + arn                 = (known after apply)
+      + assume_role_policy  = jsonencode(
+            {
+              + Statement = []
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date         = (known after apply)
+      + id                  = (known after apply)
+      + managed_policy_arns = (known after apply)
+      + name                = "cloudthrift-dev-scheduler"
+      + name_prefix         = (known after apply)
+      + tags_all            = (known after apply)
+      + unique_id           = (known after apply)
+    }
+
+  # module.schedule.aws_iam_role_policy.this will be created
+  + resource "aws_iam_role_policy" "this" {
+      + id          = (known after apply)
+      + name        = (known after apply)
+      + name_prefix = (known after apply)
+      + policy      = (known after apply)
+      + role        = (known after apply)
+    }
+
+  # module.schedule.aws_scheduler_schedule.this will be created
+  + resource "aws_scheduler_schedule" "this" {
+      + arn                          = (known after apply)
+      + group_name                   = (known after apply)
+      + id                           = (known after apply)
+      + name                         = "cloudthrift-dev-daily"
+      + name_prefix                  = (known after apply)
+      + schedule_expression          = "cron(0 6 * * ? *)"
+      + schedule_expression_timezone = "Asia/Kolkata"
+
+      + flexible_time_window {
+          + mode = "OFF"
+        }
+
+      + target {
+          + arn      = (known after apply)
+          + input    = jsonencode(
+                {
+                  + scheduled_time = "<aws.scheduler.scheduled-time>"
+                }
+            )
+          + role_arn = (known after apply)
+
+          + retry_policy {
+              + maximum_event_age_in_seconds = 3600
+              + maximum_retry_attempts       = 2
+            }
+        }
+    }
+
+  # module.storage.data.aws_iam_policy_document.https will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "https" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions   = [
+              + "s3:*",
+            ]
+          + effect    = "Deny"
+          + resources = [
+              + (known after apply),
+              + (known after apply),
+            ]
+          + sid       = "DenyInsecureTransport"
+
+          + condition {
+              + test     = "Bool"
+              + values   = [
+                  + "false",
+                ]
+              + variable = "aws:SecureTransport"
+            }
+
+          + principals {
+              + identifiers = [
+                  + "*",
+                ]
+              + type        = "*"
+            }
+        }
+    }
+
+  # module.storage.aws_s3_bucket.this will be created
+  + resource "aws_s3_bucket" "this" {
+      + acceleration_status         = (known after apply)
+      + acl                         = (known after apply)
+      + arn                         = (known after apply)
+      + bucket                      = "cloudthrift-dev-reports-123456789012-ap-south-1"
+      + bucket_domain_name          = (known after apply)
+      + bucket_prefix               = (known after apply)
+      + bucket_regional_domain_name = (known after apply)
+      + hosted_zone_id              = (known after apply)
+      + id                          = (known after apply)
+      + object_lock_enabled         = (known after apply)
+      + policy                      = (known after apply)
+      + region                      = (known after apply)
+      + request_payer               = (known after apply)
+      + tags_all                    = (known after apply)
+      + website_domain              = (known after apply)
+      + website_endpoint            = (known after apply)
+    }
+
+  # module.storage.aws_s3_bucket_lifecycle_configuration.this will be created
+  + resource "aws_s3_bucket_lifecycle_configuration" "this" {
+      + bucket                                 = (known after apply)
+      + expected_bucket_owner                  = (known after apply)
+      + id                                     = (known after apply)
+      + transition_default_minimum_object_size = (known after apply)
+
+      + rule {
+          + id     = "retention"
+          + prefix = (known after apply)
+          + status = "Enabled"
+
+          + expiration {
+              + days                         = 365
+              + expired_object_delete_marker = (known after apply)
+            }
+
+          + filter {
+              + object_size_greater_than = (known after apply)
+              + object_size_less_than    = (known after apply)
+              + prefix                   = "reports/"
+            }
+
+          + noncurrent_version_expiration {
+              + newer_noncurrent_versions = (known after apply)
+              + noncurrent_days           = 30
+            }
+        }
+    }
+
+  # module.storage.aws_s3_bucket_ownership_controls.this will be created
+  + resource "aws_s3_bucket_ownership_controls" "this" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + rule {
+          + object_ownership = "BucketOwnerEnforced"
+        }
+    }
+
+  # module.storage.aws_s3_bucket_policy.this will be created
+  + resource "aws_s3_bucket_policy" "this" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+      + policy = (known after apply)
+    }
+
+  # module.storage.aws_s3_bucket_public_access_block.this will be created
+  + resource "aws_s3_bucket_public_access_block" "this" {
+      + block_public_acls       = true
+      + block_public_policy     = true
+      + bucket                  = (known after apply)
+      + id                      = (known after apply)
+      + ignore_public_acls      = true
+      + restrict_public_buckets = true
+    }
+
+  # module.storage.aws_s3_bucket_server_side_encryption_configuration.this will be created
+  + resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + rule {
+          + apply_server_side_encryption_by_default {
+              + sse_algorithm = "AES256"
+            }
+        }
+    }
+
+  # module.storage.aws_s3_bucket_versioning.this will be created
+  + resource "aws_s3_bucket_versioning" "this" {
+      + bucket = (known after apply)
+      + id     = (known after apply)
+
+      + versioning_configuration {
+          + mfa_delete = (known after apply)
+          + status     = "Enabled"
+        }
+    }
+
+Plan: 14 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + collector_function = "cloudthrift-dev-collector"
+  + report_bucket      = (known after apply)
+  + schedule_name      = "cloudthrift-dev-daily"
+
+tests\offline.tftest.hcl... tearing down
+tests\offline.tftest.hcl... pass
+
+Success! 1 passed, 0 failed.
